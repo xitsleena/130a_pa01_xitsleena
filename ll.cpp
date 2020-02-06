@@ -46,6 +46,7 @@ void addLink(LinkedList *list, int coeff, int pow){
         }
         else if (newlink->power == front->power){
             front->coefficient += newlink->coefficient;
+            delete newlink;
         }
         else{ 
             while (front->next != NULL && front->next->power < newlink->power){
@@ -54,6 +55,7 @@ void addLink(LinkedList *list, int coeff, int pow){
             // last link
             if (front->next != NULL && front->next->power == newlink->power){
                 front->next->coefficient += newlink->coefficient;
+                delete newlink;
             }
             else if (front == NULL) {
                 list->tail->next = newlink;
