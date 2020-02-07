@@ -12,37 +12,51 @@ struct Node {
     Node *next;
 };
 
-struct LinkedList {
-  Node *head;
-  Node *tail;
+class LinkedList {
+    public: 
+        LinkedList(){ 
+            head = NULL;
+            tail = NULL;
+        }
+        void addLink(int coeff, int pow);
+        void addPoly();
+        void mulPoly();
+        void squPoly();
+
+   
+        Node *head;
+        Node *tail;
 };
 
 // global variables 
 LinkedList *firstpoly = new LinkedList;
 LinkedList *secondpoly = new LinkedList;
 LinkedList *finalpoly = new LinkedList;
+
 string fp = "";
 string sp = "";
-string operation;
+string operation ="";
 
-void addLink(LinkedList *list, int coeff, int pow){
-    if (list->head==NULL) {
-        list->head = new Node;
-        list->head->coefficient = coeff; 
-        list->head->power = pow;
-        list->head->next = NULL;
-        list->tail = list->head;
+void LinkedList::addLink(int coeff, int pow){
+    if (this->head==NULL) {
+        Node *newlink = new Node; 
+        newlink->coefficient = coeff;
+        newlink->power = pow;
+        newlink->next = NULL;
+        this->head = newlink;
+        this->tail = newlink;
     } 
     else {
-        Node *front = list->head;
+        Node *front = this->head;
         Node *newlink = new Node;
         newlink->coefficient = coeff;
         newlink->power = pow; 
+        newlink->next = NULL;
 
         // first link
         if (newlink->power < front->power){
             newlink->next = front; 
-            list->head = newlink;
+            this->head = newlink;
         }
         else if (newlink->power == front->power){
             front->coefficient += newlink->coefficient;
@@ -58,9 +72,9 @@ void addLink(LinkedList *list, int coeff, int pow){
                 delete newlink;
             }
             else if (front == NULL) {
-                list->tail->next = newlink;
-                list->tail = list->tail->next;
-                list->tail->next = NULL;
+                this->tail->next = newlink;
+                this->tail = list->tail->next;
+                this->tail->next = NULL;
             }
             else{
                 newlink->next = front->next;
@@ -109,11 +123,11 @@ void readPoly(string equation){
             power = stoi(t);
             powers += t + " ";
             if (first) {
-                addLink(firstpoly, coefficient, power);
+                firstpoly->addLink(coefficient, power);
                 fp += t + " ";
             }
             else {
-                addLink(secondpoly, coefficient, power);
+                secondpoly->addLink(coefficient, power);
                 sp += t + " ";
             }
         }
@@ -139,15 +153,15 @@ void writePoly(){
     }
 }
 
-void addPoly(){
+void LinkedList::addPoly(){
     
     bool added = false;
     for (const Node *pf = firstpoly->head; pf!=NULL; pf = pf->next) {
-        addLink(finalpoly, pf->coefficient, pf->power);
+        finalpoly->addLink(pf->coefficient, pf->power);
     }
 
     for (Node *sp = secondpoly->head; sp!=NULL; sp = sp->next) {
-        addLink(finalpoly, sp->coefficient, sp->power);
+        finalpoly->addLink(sp->coefficient, sp->power);
     }
 
     for (Node *fp = finalpoly->head; fp!=NULL; fp = fp->next) {
@@ -156,7 +170,7 @@ void addPoly(){
     
 }
 
-void mulPoly(){
+void LinkedList::mulPoly(){
     int tpow = 0;
     int tcoeff = 0; 
     Node *n = finalpoly->head;
@@ -165,15 +179,15 @@ void mulPoly(){
              tpow = pf->power + ps->power; 
              tpow %= (int) pow(10,4);
              tcoeff = (pf->coefficient * ps->coefficient) % (int) pow(10,6);
-             addLink(finalpoly, tcoeff, tpow);
+             finalpoly->addLink(tcoeff, tpow);
         }  
     }
     
 }
 
-void squPoly(){
+void LinkedList::squPoly(){
     for (Node *p=firstpoly->head; p!=NULL; p = p->next) {
-        addLink(secondpoly, p->coefficient, p->power);
+        secondpoly->addLink(p->coefficient, p->power);
     }
     mulPoly();
 }
@@ -186,11 +200,13 @@ void freeLinkedList(LinkedList* list){
         delete current;
         current = n;
     }
+    list->head = NULL;
+    list->tail = NULL;
     delete list;
 }
 
 int main(int argc,char* argv[]){
-    
+  
     readPoly(argv[1]);
     
     if (operation == "+"){
