@@ -19,9 +19,9 @@ class LinkedList {
             tail = NULL;
         }
         void addLink(int coeff, int pow);
-        void addPoly();
-        void mulPoly();
-        void squPoly();
+        friend void addPoly();
+        friend void mulPoly();
+        friend void squPoly();
 
    
         Node *head;
@@ -73,7 +73,7 @@ void LinkedList::addLink(int coeff, int pow){
             }
             else if (front == NULL) {
                 this->tail->next = newlink;
-                this->tail = list->tail->next;
+                this->tail = this->tail->next;
                 this->tail->next = NULL;
             }
             else{
@@ -153,7 +153,7 @@ void writePoly(){
     }
 }
 
-void LinkedList::addPoly(){
+void addPoly(){
     
     bool added = false;
     for (const Node *pf = firstpoly->head; pf!=NULL; pf = pf->next) {
@@ -170,7 +170,7 @@ void LinkedList::addPoly(){
     
 }
 
-void LinkedList::mulPoly(){
+void mulPoly(){
     int tpow = 0;
     int tcoeff = 0; 
     Node *n = finalpoly->head;
@@ -185,7 +185,7 @@ void LinkedList::mulPoly(){
     
 }
 
-void LinkedList::squPoly(){
+void squPoly(){
     for (Node *p=firstpoly->head; p!=NULL; p = p->next) {
         secondpoly->addLink(p->coefficient, p->power);
     }
